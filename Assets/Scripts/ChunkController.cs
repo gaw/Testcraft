@@ -181,9 +181,15 @@ public class ChunkController : MonoBehaviour
                 }
 
 
+
             if (blocks.Count > 0)
             {
+                var blockToCreate = new List<Block>();
                 foreach (var block in blocks) SetBlock(block.Position, block);
+                foreach (var block in blocks)
+                {
+                    //if(bloc)
+                }
 
                 Debug.Log(string.Format("{0} blocks", blocks.Count));
 
