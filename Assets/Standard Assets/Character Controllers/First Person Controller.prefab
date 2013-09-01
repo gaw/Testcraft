@@ -297,8 +297,8 @@ MonoBehaviour:
   sensitivityY: 10
   minimumX: 0
   maximumX: 360
-  minimumY: -60
-  maximumY: 60
+  minimumY: -90
+  maximumY: 90
 --- !u!1002 &11400007
 EditorExtensionImpl:
   serializedVersion: 6
