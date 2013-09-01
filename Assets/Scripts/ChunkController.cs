@@ -10,7 +10,7 @@ public class ChunkController : MonoBehaviour
     public Vector3 MapPosition;
 
     private ObjectPool _objectPool;
-    
+    private ResourceManager rs_mgr;
     private float distanceLoad = 50;
 
     private Vector3 _center;
@@ -36,6 +36,17 @@ public class ChunkController : MonoBehaviour
         //o.transform.position = Center;
 
         //Debug.Log("Chunk Created");
+
+        // Получаем менеджер ресурсов
+        var rs = GameObject.FindGameObjectWithTag("RS_MGR");
+        if (rs != null)
+        {
+            rs_mgr = rs.GetComponent<ResourceManager>();
+        }
+        else
+        {
+            print("RESOURCE MANAGER NOT FOUND");
+        }
     }
 
 
@@ -63,8 +74,10 @@ public class ChunkController : MonoBehaviour
         SetBlock(pos, block);
 
         var o = _objectPool.GetObjects(1)[0];
+        o.renderer.material.mainTexture = rs_mgr.GetTexture(blockType);
         o.transform.parent = transform;
         o.transform.position = pos;
+        o.AddComponent<BoxCollider>();
         o.SetActive(true);
     }
 

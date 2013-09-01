@@ -6,7 +6,7 @@ public class PlayerInput : MonoBehaviour
 {
     private ChunksMap gm_mgr;
     public Texture2D Crosshair;
-
+    private BlockType _selectedBlockType;
 
     private void OnGUI()
     {
@@ -25,10 +25,30 @@ public class PlayerInput : MonoBehaviour
         {
             gm_mgr = mgr.GetComponent<ChunksMap>();
         }
+
+        _selectedBlockType = BlockType.Dirt;
     }
 
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            _selectedBlockType = BlockType.Dirt;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _selectedBlockType = BlockType.Stone;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            _selectedBlockType = BlockType.IronOre;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            _selectedBlockType = BlockType.Wood;
+        }
+    
+
         var ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         RaycastHit hit;
 
@@ -41,7 +61,7 @@ public class PlayerInput : MonoBehaviour
             }
             if (Input.GetMouseButtonDown(1) && hit.distance >= 1.5f)
             {
-                gm_mgr.AddBlock(hit.transform.position + hit.normal, BlockType.Dirt);
+                gm_mgr.AddBlock(hit.transform.position + hit.normal, _selectedBlockType);
             }
         }    
     }
