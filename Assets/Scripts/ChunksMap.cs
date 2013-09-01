@@ -21,7 +21,7 @@ public class ChunksMap : MonoBehaviour
 
     private void Start()
     {
-        _world = new World(ChunkSizeX*CountX, ChunkSizeZ*CountZ, 10, 10, 10, 1);
+        _world = new World(ChunkSizeX*CountX, ChunkSizeZ*CountZ, 0.01F, 1F, 1, 4);
 
         for (var i = 0; i < CountX; i++)
             for (var j = -2; j < CountY; j++)

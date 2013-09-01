@@ -15,8 +15,6 @@ namespace TestCraft.Core
 
         public World(int x, int z, float freq, float amp, float pers, int octave)
         {
-
-            return;
             _heightMap = new int[x,z];
             var pn = new PerlinNoise(x, z);
 
@@ -25,8 +23,7 @@ namespace TestCraft.Core
                 for (int j = 0; j < z; j++)
                 {
                     float value = pn.GetRandomHeight(i, j, 1, freq, amp, pers, octave);
-                    value = 0.5f * (1 + value);
-                    _heightMap[i,j] = (int)(value * 10);
+                    _heightMap[i,j] = (int)((value + 1) * 4) + 1;
                 }
             }
         }
@@ -34,12 +31,16 @@ namespace TestCraft.Core
 
         public Block GetBlock(int x, int y, int z)
         {
-            if(y == 0 || (y == 1 && Random.Range(0, 5) == 0))
+            //if(y == 0 || (y == 1 && Random.Range(0, 5) == 0))
+            //    return new Block(new Vector3(x, y, z));
+
+            if(y <10)
+            //    return new Block(new Vector3(x, y, z));
+            if (y >= 0 && y < _heightMap[x, z])
+            {
                 return new Block(new Vector3(x, y, z));
-            //if (_heightMap[x, z] < y)
-            //{
-                
-            //}
+            }
+
             return null;
         }
     }
