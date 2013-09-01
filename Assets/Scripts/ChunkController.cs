@@ -8,7 +8,7 @@ public class ChunkController : MonoBehaviour
     public IWorld World;
     public Vector3 MapPosition;
     
-    private float distanceLoad = 90;
+    private float distanceLoad = 50;
 
     private Vector3 Center;
 
@@ -17,13 +17,13 @@ public class ChunkController : MonoBehaviour
     private void Start()
     {
         var chunksMap = gameObject.transform.parent.GetComponent<ChunksMap>();
-        Center = new Vector3(transform.position.x + chunksMap.ChunkSizeX,
-                             transform.position.y + chunksMap.ChunkSizeY,
-                             transform.position.z + chunksMap.ChunkSizeZ);
-        
+        Center = new Vector3(transform.position.x + chunksMap.ChunkSizeX / 2,
+                             transform.position.y + chunksMap.ChunkSizeY / 2,
+                             transform.position.z + chunksMap.ChunkSizeZ / 2);
+
         //var o = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         //o.transform.parent = transform;
-        //o.transform.localPosition = Vector3.zero;
+        //o.transform.position = Center;
 
         //Debug.Log("Chunk Created");
     }
@@ -31,10 +31,11 @@ public class ChunkController : MonoBehaviour
     void Update () {
         if (_state == ChunkState.Empty && DistanceToPlayer(transform.position) <= distanceLoad)
         {
+            //Debug.Log("Chunk Loading");
             _state = ChunkState.Loading;
             StartCoroutine(LoadBlocks());
         }
-        else if (_state == ChunkState.Finished && DistanceToPlayer(transform.position) > (distanceLoad / 2))
+        else if (_state == ChunkState.Finished && DistanceToPlayer(transform.position) > (distanceLoad))
         {
             //if (MapPosition.y == 0)
             //{
@@ -44,7 +45,7 @@ public class ChunkController : MonoBehaviour
 
             DisableChunk();
         }
-        else if (_state == ChunkState.Disabled && DistanceToPlayer(transform.position) <= (distanceLoad / 2))
+        else if (_state == ChunkState.Disabled && DistanceToPlayer(transform.position) <= (distanceLoad))
         {
             EnableChunk();
         }	
@@ -66,7 +67,7 @@ public class ChunkController : MonoBehaviour
 
         if (blocks.Length > 0)
         {
-            //Debug.Log(string.Format("{0} blocks", blocks.Length));
+            Debug.Log(string.Format("{0} blocks", blocks.Length));
 
             var startDate2 = DateTime.Now;
 
@@ -94,7 +95,7 @@ public class ChunkController : MonoBehaviour
                 yield return null;
             }
 
-            Debug.Log(string.Format("Loading blocks: {0}, {1}. {2} blocks", startDate2 - startDate, DateTime.Now - startDate2, blocks.Length));
+            Debug.Log(string.Format("Loading blocks {3}: {0}, {1}. {2} blocks", startDate2 - startDate, DateTime.Now - startDate2, blocks.Length, name));
         }
 
         _state = ChunkState.Finished;

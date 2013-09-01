@@ -14,8 +14,9 @@ public class ObjectPool : MonoBehaviour
     void Start () {
         if (Prefab == null)
         {
-            Prefab = Resources.LoadAssetAtPath("Assets/Assets/Block_PFB.prefab", typeof (GameObject)) as GameObject;
-            Prefab.renderer.material.mainTexture = (Texture2D) Resources.LoadAssetAtPath("Assets/Assets/Textures/dirt_with_grass.jpg", typeof (Texture2D));
+            Prefab = Resources.LoadAssetAtPath("Assets/Prefabs/Block_PFB.prefab", typeof (GameObject)) as GameObject;
+            var tex  = (Texture2D) Resources.LoadAssetAtPath("Assets/Textures/dirt_with_grass.jpg", typeof (Texture2D));
+            Prefab.renderer.material.mainTexture = tex;
         }
 
         Pool = new List<GameObject>();
@@ -46,7 +47,7 @@ public class ObjectPool : MonoBehaviour
             Pool.Add(o);
         }
 
-        Debug.Log("ObjectPool: " + Pool.Count);
+        //Debug.Log("ObjectPool: " + Pool.Count);
     }
     
     
