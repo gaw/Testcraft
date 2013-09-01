@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using TestCraft.Core;
@@ -62,7 +63,8 @@ public class ChunksMap : MonoBehaviour
 
     public Block[] GetNearBlocks(Vector3 pos)
     {
-        
+        var cc = GetChunkControllerByBlock(pos);
+        return cc.GetNearBlocks(pos);
     }
 
 
@@ -76,10 +78,16 @@ public class ChunksMap : MonoBehaviour
 
     private Transform GetChunkByBlock(Vector3 pos)
     {
-        var chunkPos = new Vector3(((int) pos.x)/ChunkSizeX, ((int) pos.y)/ChunkSizeY, ((int) pos.z)/ChunkSizeZ);
+        var x = pos.x < 0 ? ((int)pos.x - ChunkSizeX + 1) / ChunkSizeX : (int)pos.x / ChunkSizeX;
+        var y = pos.y < 0 ? ((int)pos.y - ChunkSizeY + 1) / ChunkSizeY : (int)pos.y / ChunkSizeY;
+        var z = pos.z < 0 ? ((int)pos.z - ChunkSizeZ + 1) / ChunkSizeZ : (int)pos.z / ChunkSizeZ;
+        var chunkPos = new Vector3(x, y, z);
 
         var chunkName = ChunkController.GetChunkName(chunkPos);
+        //Debug.Log(chunkName);
+
         var chunk = transform.FindChild(chunkName);
+
         if (chunk == null)
         {
             Debug.Log("Не найдена область: " + chunkName);

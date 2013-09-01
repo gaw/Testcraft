@@ -18,6 +18,6 @@ namespace TestCraft.Core
         }
 
         public Vector3 Position { get; private set; }
-        public BlockType BlockType { set; private get; }
+        public BlockType BlockType { set; get; }
     }
 }
