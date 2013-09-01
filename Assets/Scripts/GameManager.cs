@@ -40,45 +40,45 @@ public class GameManager : MonoBehaviour {
         //var blocks = _world.GetNearBlocks(_position);
         //Vector3[] newBlocks = Array.ConvertAll(blocks, a => a.Position);
 
-        Vector3[] blocks = _world.GetBlocks(_position);
+        //Vector3[] blocks = _world.GetBlocks(_position);
 
-        if (blocks.Length > 0)
-            Debug.Log(blocks.Length);
+        //if (blocks.Length > 0)
+        //    Debug.Log(blocks.Length);
 
-        //if (nya) return;
-        //if(newBlocks.Length > 0) nya = true;
+        ////if (nya) return;
+        ////if(newBlocks.Length > 0) nya = true;
 		
-		foreach(var block in blocks)
-		{
-		    var hash = Utils.VectorToHash(block);
-			if(!_blocks.ContainsKey(hash))
-			{
-                var o = CreateBlock();
-                o.position = block;
-                _blocks.Add(hash, o);
-			}
-		}
+        //foreach(var block in blocks)
+        //{
+        //    var hash = Utils.VectorToHash(block);
+        //    if(!_blocks.ContainsKey(hash))
+        //    {
+        //        var o = CreateBlock();
+        //        o.position = block;
+        //        _blocks.Add(hash, o);
+        //    }
+        //}
 
-	    return;
+        //return;
 
-	    foreach(var block in _blocks)
-	    {
-			if(!Array.Exists(blocks, a => Utils.VectorToHash(a) == block.Key))
-			{
-                block.Value.gameObject.SetActive(false);
-            }
-		}
+        //foreach(var block in _blocks)
+        //{
+        //    if(!Array.Exists(blocks, a => Utils.VectorToHash(a) == block.Key))
+        //    {
+        //        block.Value.gameObject.SetActive(false);
+        //    }
+        //}
 
-	    return;
+        //return;
 
-        foreach(var block in _blocks)
-		{
-		    if (!block.Value.gameObject.activeSelf)
-		    {
-		        _blocksPool.Add(block.Value);
-		        _blocks.Remove(block.Key);
-		    }
-		}
+        //foreach(var block in _blocks)
+        //{
+        //    if (!block.Value.gameObject.activeSelf)
+        //    {
+        //        _blocksPool.Add(block.Value);
+        //        _blocks.Remove(block.Key);
+        //    }
+        //}
 
 	}
 

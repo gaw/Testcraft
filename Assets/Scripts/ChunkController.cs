@@ -7,6 +7,8 @@ public class ChunkController : MonoBehaviour
     public Transform Player;
     public IWorld World;
     public Vector3 MapPosition;
+
+    private ObjectPool _objectPool;
     
     private float distanceLoad = 50;
 
@@ -16,6 +18,9 @@ public class ChunkController : MonoBehaviour
 
     private void Start()
     {
+        var chunksMapObject = GameObject.Find("ChunksMap");
+        _objectPool = chunksMapObject.GetComponent<ObjectPool>();
+
         var chunksMap = gameObject.transform.parent.GetComponent<ChunksMap>();
         Center = new Vector3(transform.position.x + chunksMap.ChunkSizeX / 2,
                              transform.position.y + chunksMap.ChunkSizeY / 2,
@@ -52,6 +57,27 @@ public class ChunkController : MonoBehaviour
 	}
 
 
+    public void AddBlock(Vector3 pos, BlockTypes blockType)
+    {
+        var o = _objectPool.GetObjects(1)[0];
+        o.transform.parent = transform;
+        o.transform.position = pos;
+        o.SetActive(true);
+    }
+
+
+    public void RemoveBlock(Vector3 pos)
+    {
+        int amountChild = transform.GetChildCount(); 
+        for (int i = 0; i < amountChild; i++)
+        {
+            var c = transform.GetChild(i);
+            if (c.position == pos)
+                Destroy(c);  // todo ”брать в пул
+        }       
+    }
+
+
     private float DistanceToPlayer(Vector3 position)
     {
         return Vector3.Distance(Player.transform.position, Center);
@@ -70,10 +96,7 @@ public class ChunkController : MonoBehaviour
             Debug.Log(string.Format("{0} blocks", blocks.Length));
 
             var startDate2 = DateTime.Now;
-
-            var chunksMapObject = GameObject.Find("ChunksMap");
-            var objectPool = chunksMapObject.GetComponent<ObjectPool>();
-
+            
             const int countPerFrame = 100;
 
             for (var index = 0; index < blocks.Length; index += countPerFrame)
@@ -82,7 +105,7 @@ public class ChunkController : MonoBehaviour
                                 ? blocks.Length - index
                                 : countPerFrame;
 
-                var objects = objectPool.GetObjects(count);
+                var objects = _objectPool.GetObjects(count);
 
                 for (var i = 0; i < count; i++)
                 {

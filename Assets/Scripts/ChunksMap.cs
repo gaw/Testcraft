@@ -38,6 +38,41 @@ public class ChunksMap : MonoBehaviour
                 }
     }
 
+
+    public void AddBlock(Vector3 pos, BlockTypes blockType)
+    {
+        var chunk = GetChunkByBlock(pos);
+        if (chunk == null) return;
+        
+        var cc = chunk.GetComponent<ChunkController>();
+        cc.AddBlock(pos, blockType);
+    }
+
+
+    public void RemoveBlock(Vector3 pos)
+    {
+        var chunk = GetChunkByBlock(pos);
+        if (chunk == null) return;
+
+        var cc = chunk.GetComponent<ChunkController>();
+        cc.RemoveBlock(pos);
+    }
+
+
+    private Transform GetChunkByBlock(Vector3 pos)
+    {
+        var chunkPos = new Vector3(((int) pos.x)/ChunkSizeX, ((int) pos.y)/ChunkSizeY, ((int) pos.z)/ChunkSizeZ);
+
+        var chunkName = ChunkController.GetChunkName(chunkPos);
+        var chunk = transform.FindChild(chunkName);
+        if (chunk == null)
+        {
+            Debug.Log("Не найдена область: " + chunkName);
+        }
+
+        return chunk;
+    }
+
     void Update () {
 	
 	}
