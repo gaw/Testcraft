@@ -1,16 +1,22 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 
 public class ObjectPool : MonoBehaviour
 {
-    private List<GameObject> Pool;
+    private GameObject[] Pool;
+    private int _objectCount;
 
     public GameObject Prefab;
     public int MinimalCount = 5000;
 
-    private int MaxCreatePerUpdate = 5;
-    
+    private int MaxCreatePerUpdate = 20;
+
+
+    private Mesh _mesh;
+    private Material _material;
+
     void Start () {
         if (Prefab == null)
         {
@@ -19,19 +25,28 @@ public class ObjectPool : MonoBehaviour
             Prefab.renderer.material.mainTexture = tex;
         }
 
-        Pool = new List<GameObject>();
+        _mesh = Prefab.GetComponent<MeshFilter>().sharedMesh;
+        _material = Prefab.renderer.material;
+        _material.mainTexture = (Texture2D)Resources.LoadAssetAtPath("Assets/Textures/dirt_with_grass.jpg", typeof(Texture2D));
+
+        Pool = new GameObject[10000];
+        _objectCount = 0;
+
+        var start = DateTime.Now;
+        FillPool(10000);
+        Debug.Log(DateTime.Now - start);
 	}
 	
 	// Update is called once per frame
-	void Update () 
+	public void Update () 
     {
-	    if(Pool.Count < MinimalCount) FillPool();
+	    if(_objectCount < MinimalCount) FillPool();
 	}
 
 
     void FillPool()
     {
-        var count = MinimalCount - Pool.Count;
+        var count = MinimalCount - _objectCount;
         if (count > MaxCreatePerUpdate) count = MaxCreatePerUpdate;
         FillPool(count);
     }
@@ -41,32 +56,42 @@ public class ObjectPool : MonoBehaviour
     {
         for (var i = 0; i < count; i++)
         {
-            var o = Instantiate(Prefab) as GameObject;
+            var o = new GameObject();
+            var filter = o.AddComponent<MeshFilter>();
+            filter.sharedMesh = _mesh;
+
+            o.AddComponent<MeshRenderer>().material = _material;
+            //o.AddComponent<BoxCollider>();
+
+            //var o = Instantiate(Prefab) as GameObject;
             o.SetActive(false);
             //o.transform.parent = transform;
-            Pool.Add(o);
+
+            Pool[_objectCount++] = o;
         }
 
-        //Debug.Log("ObjectPool: " + Pool.Count);
+        Debug.Log("ObjectPool: " + _objectCount);
     }
     
     
     public GameObject[] GetObjects(int count)
     {
-        if (Pool.Count > count)
+        var res = new GameObject[count];
+
+        if (_objectCount > count)
         {
-            var res = Pool.GetRange(Pool.Count - count, count);
-            Pool.RemoveRange(Pool.Count - count, count);
-            return res.ToArray();
+            Array.Copy(Pool, _objectCount - count, res, 0, count);
+            _objectCount -= count;
+            return res;
         }
 
-        if (Pool.Count < count)
+        if (_objectCount < count)
         {
-            FillPool(count - Pool.Count);
+            FillPool(count - _objectCount);
         }
 
-        var result = Pool.ToArray();
-        Pool.Clear();
-        return result;
+        Array.Copy(Pool, res, count);
+        _objectCount = 0;
+        return res;
     }
 }

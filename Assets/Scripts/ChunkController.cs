@@ -112,7 +112,6 @@ public class ChunkController : MonoBehaviour
                     var o = objects[i];
                     o.transform.parent = transform;
                     o.transform.position = blocks[index + i].Position;
-                    o.SetActive(true);
                 }
 
                 yield return null;
@@ -122,19 +121,34 @@ public class ChunkController : MonoBehaviour
         }
 
         _state = ChunkState.Finished;
+
+        EnableChunk();
+
+        //int amountChild = transform.GetChildCount(); // Количество детей.
+        //for (int i = 0; i < amountChild; i++)
+        //{
+        //    transform.GetChild(i).gameObject.SetActive(true);
+        //}
     }
 
 
     private void EnableChunk()
     {
-        Debug.Log(string.Format("Enabling: {0}", name));
+        //Debug.Log(string.Format("Enabling: {0}", name));
 
         int amountChild = this.transform.GetChildCount(); // Количество детей.
         for (int i = 0; i < amountChild; i++)
         {
-            BoxCollider bc = this.transform.GetChild(i).gameObject.GetComponent<BoxCollider>();
+            var child = transform.GetChild(i).gameObject;
+            var bc = child.GetComponent<BoxCollider>();
             if (bc != null)
+            {
                 bc.enabled = true;
+            }
+            else
+            {
+                child.AddComponent<BoxCollider>();
+            }
 
             transform.GetChild(i).gameObject.SetActive(true);
         }
