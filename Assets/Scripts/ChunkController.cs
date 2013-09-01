@@ -71,13 +71,13 @@ public class ChunkController : MonoBehaviour
 	}
 
 
-    public void AddBlock(Vector3 pos, BlockType blockType)
+    public void AddBlock(Vector3 pos, BlockType blockType, params string[] attributes)
     {
-        var block = new Block(pos) {BlockType = blockType};
+        var block = new Block(pos) {BlockType = blockType, Attributes = new List<string>(attributes)};
         SetBlock(pos, block);
 
         var o = _objectPool.GetObjects(1)[0];
-        o.renderer.material.mainTexture = rs_mgr.GetTexture(blockType);
+        o.renderer.material.mainTexture = rs_mgr.GetTexture(blockType, attributes);
         o.transform.parent = transform;
         o.transform.position = pos;
         o.AddComponent<BoxCollider>();

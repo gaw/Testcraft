@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 using TestCraft.Core;
 
 public class ChunksMap : MonoBehaviour
@@ -16,6 +17,7 @@ public class ChunksMap : MonoBehaviour
     public int ChunkSizeZ = 32;
 
     private World _world;
+    private ResourceManager rs_mgr;
 
     private void Start()
     {
@@ -37,13 +39,50 @@ public class ChunksMap : MonoBehaviour
                     controller.World = _world;
                     controller.MapPosition = new Vector3(i, j, k);
                 }
+
+        var rs = GameObject.FindGameObjectWithTag("RS_MGR");
+        if (rs != null)
+        {
+            rs_mgr = rs.GetComponent<ResourceManager>();
+        }
+        else
+        {
+            print("RESOURCE MANAGER NOT FOUND");
+        }
     }
 
 
-    public void AddBlock(Vector3 pos, BlockType blockType)
+    public void AddBlock(Vector3 pos, BlockType blockType, params string[] attributes)
     {
         var cc = GetChunkControllerByBlock(pos);
-        cc.AddBlock(pos, blockType);
+
+        var nbArray = cc.GetNearBlocks(pos);
+
+        if (blockType == BlockType.Dirt)
+        {
+            // Ќаходим верхний блок, если такой есть
+            var hiBlock = nbArray.FirstOrDefault(b => b.BlockType == BlockType.Dirt && b.Position == new Vector3(pos.x, pos.y + 1, pos.z));
+            if (hiBlock != null)
+            {
+                cc.AddBlock(pos, blockType);
+            }
+            else
+            {
+                cc.AddBlock(pos, blockType, BlockAttributes.WithGrass);
+                var lowBlock = nbArray.FirstOrDefault(b => b.BlockType == BlockType.Dirt && b.Position == new Vector3(pos.x, pos.y - 1, pos.z));
+                if (lowBlock != null)
+                {
+                    lowBlock.Attributes.Remove(BlockAttributes.WithGrass);
+                    cc.GetBlockObject(lowBlock.Position).renderer.material.mainTexture =
+                        rs_mgr.GetTexture(BlockType.Dirt);
+                }
+            }
+        }
+        else
+        {
+            cc.AddBlock(pos, blockType);
+        }
+        
     }
 
 
