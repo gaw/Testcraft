@@ -171,6 +171,7 @@ public class ChunkController : MonoBehaviour
         var startDate = DateTime.Now;
 
         var blocks = new List<Block>();
+        var blocksToCreate = new Block[_chunksMap.ChunkSizeX, _chunksMap.ChunkSizeZ];
         for (var i = (int)transform.position.x; i < transform.position.x + _chunksMap.ChunkSizeX; i++)
             for (var j = (int)transform.position.y; j < transform.position.y + _chunksMap.ChunkSizeY; j++)
                 for (var k = (int)transform.position.z; k < transform.position.z + _chunksMap.ChunkSizeZ; k++)
@@ -178,18 +179,23 @@ public class ChunkController : MonoBehaviour
                     var b = World.GetBlock(i, j, k);
                     if (b == null) continue;
                     blocks.Add(b);
+
+                    var highestBlock = blocksToCreate[i - (int) transform.position.x, k - (int) transform.position.z];
+                    if (highestBlock == null || highestBlock.Position.y < j)
+                        blocksToCreate[i - (int) transform.position.x, k - (int) transform.position.z] = b;
                 }
-
-
 
             if (blocks.Count > 0)
             {
-                var blockToCreate = new List<Block>();
                 foreach (var block in blocks) SetBlock(block.Position, block);
-                foreach (var block in blocks)
-                {
-                    //if(bloc)
-                }
+
+                blocks.Clear();
+                for (var i = 0; i < _chunksMap.ChunkSizeX; i++)
+                    for (var j = 0; j < _chunksMap.ChunkSizeZ; j++)
+                    {
+                        if(blocksToCreate[i,j] != null)
+                            blocks.Add(blocksToCreate[i,j]);
+                    }
 
                 Debug.Log(string.Format("{0} blocks", blocks.Count));
 

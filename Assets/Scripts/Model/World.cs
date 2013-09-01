@@ -23,8 +23,7 @@ namespace TestCraft.Core
                 for (int j = 0; j < z; j++)
                 {
                     float value = pn.GetRandomHeight(i, j, 1, freq, amp, pers, octave);
-                    value = 0.5f * (1 + value);
-                    _heightMap[i,j] = (int)value * 4 + 1;
+                    _heightMap[i,j] = (int)((value + 1) * 4) + 1;
                 }
             }
         }
@@ -35,7 +34,7 @@ namespace TestCraft.Core
             //if(y == 0 || (y == 1 && Random.Range(0, 5) == 0))
             //    return new Block(new Vector3(x, y, z));
 
-            if(y <3)
+            if(y <10)
             //    return new Block(new Vector3(x, y, z));
             if (y >= 0 && y < _heightMap[x, z])
             {
