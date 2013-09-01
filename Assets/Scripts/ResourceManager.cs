@@ -14,8 +14,8 @@ public class ResourceManager : MonoBehaviour
             "dirt_with_grass.jpg",
             "dirt.jpg",
             "stone.jpg",
-            "wood",
-            "iron_ore"
+            "wood.jpg",
+            "iron_ore.jpg"
         };
 
 

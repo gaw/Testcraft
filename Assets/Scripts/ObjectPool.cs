@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TestCraft.Core;
 using UnityEngine;
 using System.Collections;
 
@@ -13,21 +14,27 @@ public class ObjectPool : MonoBehaviour
 
     private int MaxCreatePerUpdate = 20;
 
+    private ResourceManager rs_mgr;
 
     private Mesh _mesh;
     private Material _material;
 
-    void Start () {
-        if (Prefab == null)
+    void Start () 
+    {
+        var rs = GameObject.FindGameObjectWithTag("RS_MGR");
+        if (rs != null)
         {
-            Prefab = Resources.LoadAssetAtPath("Assets/Prefabs/Block_PFB.prefab", typeof (GameObject)) as GameObject;
-            var tex  = (Texture2D) Resources.LoadAssetAtPath("Assets/Textures/dirt_with_grass.jpg", typeof (Texture2D));
-            Prefab.renderer.material.mainTexture = tex;
+            rs_mgr = rs.GetComponent<ResourceManager>();
+        }
+        else
+        {
+            print("RESOURCE MANAGER NOT FOUND");
         }
 
         _mesh = Prefab.GetComponent<MeshFilter>().sharedMesh;
         _material = Prefab.renderer.material;
-        _material.mainTexture = (Texture2D)Resources.LoadAssetAtPath("Assets/Textures/dirt_with_grass.jpg", typeof(Texture2D));
+        _material.mainTexture = rs_mgr.GetTexture(BlockType.Dirt, new string[] {"with_grass"});
+            //(Texture2D)Resources.LoadAssetAtPath("Assets/Textures/dirt_with_grass.jpg", typeof(Texture2D));
 
         Pool = new GameObject[10000];
         _objectCount = 0;
