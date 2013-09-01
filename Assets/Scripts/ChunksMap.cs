@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using TestCraft.Core;
 
 public class ChunksMap : MonoBehaviour
 {
@@ -39,7 +40,7 @@ public class ChunksMap : MonoBehaviour
     }
 
 
-    public void AddBlock(Vector3 pos, BlockTypes blockType)
+    public void AddBlock(Vector3 pos, BlockType blockType)
     {
         var chunk = GetChunkByBlock(pos);
         if (chunk == null) return;

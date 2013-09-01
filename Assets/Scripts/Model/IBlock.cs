@@ -1,24 +1,23 @@
 using UnityEngine;
 using System.Collections;
 
-public interface IBlock {
-    Vector3 Position { get; }
-    BlockTypes BlockType { set; }
-}
-
-public class Block : IBlock
+namespace TestCraft.Core
 {
-    public Block(Vector3 pos)
+    public interface IBlock
     {
-        Position = pos;
-        BlockType = BlockTypes.Ground;
+        Vector3 Position { get; }
+        BlockType BlockType { set; }
     }
 
-    public Vector3 Position { get; private set; }
-    public BlockTypes BlockType { set; private get; }
-}
+    public class Block : IBlock
+    {
+        public Block(Vector3 pos)
+        {
+            Position = pos;
+            BlockType = BlockType.Dirt;
+        }
 
-public enum BlockTypes
-{
-    Ground
+        public Vector3 Position { get; private set; }
+        public BlockType BlockType { set; private get; }
+    }
 }

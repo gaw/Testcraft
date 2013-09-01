@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using TestCraft.Core;
 
 public class ChunkController : MonoBehaviour
 {
@@ -57,7 +58,7 @@ public class ChunkController : MonoBehaviour
 	}
 
 
-    public void AddBlock(Vector3 pos, BlockTypes blockType)
+    public void AddBlock(Vector3 pos, BlockType blockType)
     {
         var o = _objectPool.GetObjects(1)[0];
         o.transform.parent = transform;
@@ -73,7 +74,7 @@ public class ChunkController : MonoBehaviour
         {
             var c = transform.GetChild(i);
             if (c.position == pos)
-                Destroy(c);  // todo ”брать в пул
+                Destroy(c.gameObject);  // todo ”брать в пул
         }       
     }
 

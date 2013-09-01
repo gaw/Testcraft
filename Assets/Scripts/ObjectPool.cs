@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TestCraft.Core;
 using UnityEngine;
 using System.Collections;
 
@@ -10,12 +11,39 @@ public class ObjectPool : MonoBehaviour
     public int MinimalCount = 5000;
 
     private int MaxCreatePerUpdate = 5;
-    
-    void Start () {
+
+    private ResourceManager rs_mgr;
+
+    private void Awake()
+    {
+
+    }
+
+    void Start () 
+    {
+        var rs = GameObject.FindGameObjectWithTag("RS_MGR");
+        if (rs != null)
+        {
+            rs_mgr = rs.GetComponent<ResourceManager>();
+        }
+        else
+        {
+            print("RESOURCE MANAGER NOT FOUND");
+        }
+
+        var tex = rs_mgr != null
+              ? rs_mgr.GetTexture(BlockType.Dirt, new string[] { "with_grass" })
+              : (Texture2D)
+                Resources.LoadAssetAtPath("Assets/Textures/dirt_with_grass.jpg", typeof(Texture2D));
+        Prefab.renderer.material.mainTexture = tex;
+
         if (Prefab == null)
         {
-            Prefab = Resources.LoadAssetAtPath("Assets/Prefabs/Block_PFB.prefab", typeof (GameObject)) as GameObject;
-            var tex  = (Texture2D) Resources.LoadAssetAtPath("Assets/Textures/dirt_with_grass.jpg", typeof (Texture2D));
+            //Prefab = Resources.LoadAssetAtPath("Assets/Prefabs/Block_PFB.prefab", typeof (GameObject)) as GameObject;
+            tex = rs_mgr != null
+                          ? rs_mgr.GetTexture(BlockType.Dirt, new string[] {"with_grass"})
+                          : (Texture2D)
+                            Resources.LoadAssetAtPath("Assets/Textures/dirt_with_grass.jpg", typeof (Texture2D));
             Prefab.renderer.material.mainTexture = tex;
         }
 

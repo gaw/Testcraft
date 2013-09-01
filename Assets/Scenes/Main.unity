@@ -141,6 +141,7 @@ GameObject:
   - 114: {fileID: 538351228}
   - 114: {fileID: 538351227}
   - 114: {fileID: 538351226}
+  - 114: {fileID: 538351230}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -260,6 +261,17 @@ CharacterController:
   m_SkinWidth: .0500000007
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &538351230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 538351224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3812f67df3afe64bb1a696b0b149932, type: 3}
+  m_Name: 
+  Crosshair: {fileID: 2800000, guid: 031009045a7303444ac5053e8be9fabe, type: 3}
 --- !u!1 &1004495970
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,7 +448,7 @@ GameObject:
   - 114: {fileID: 1477320851}
   m_Layer: 0
   m_Name: ChunksMap
-  m_TagString: Untagged
+  m_TagString: GM_MGR
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
