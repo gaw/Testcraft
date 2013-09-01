@@ -7,7 +7,7 @@ using System.Collections;
 public class ChunkController : MonoBehaviour
 {
     public Transform Player;
-    public IWorld World;
+    public World World;
     public Vector3 MapPosition;
 
     private ChunksMap _chunksMap;
@@ -129,6 +129,19 @@ public class ChunkController : MonoBehaviour
     }
 
 
+    public GameObject GetBlockObject(Vector3 pos)
+    {
+        int amountChild = transform.GetChildCount();
+        for (int i = 0; i < amountChild; i++)
+        {
+            var c = transform.GetChild(i);
+            if (c.position == pos)
+                return c.gameObject;
+        }
+        return null;
+    }
+
+
     public Block[] GetNearBlocks(Vector3 pos)
     {
         var blocks = new List<Block>();
@@ -144,8 +157,7 @@ public class ChunkController : MonoBehaviour
 
         return blocks.ToArray();
     }
-
-
+    
 
     private float DistanceToPlayer(Vector3 position)
     {
@@ -158,39 +170,48 @@ public class ChunkController : MonoBehaviour
 
         var startDate = DateTime.Now;
 
-        var blocks = World.GetChunkBlocks(MapPosition);
-
-        if (blocks.Length > 0)
-        {
-            foreach(var block in blocks) SetBlock(block.Position, block);
-
-            Debug.Log(string.Format("{0} blocks", blocks.Length));
-
-            var startDate2 = DateTime.Now;
-            
-            const int countPerFrame = 100;
-
-            for (var index = 0; index < blocks.Length; index += countPerFrame)
-            {
-                var count = blocks.Length - index < countPerFrame
-                                ? blocks.Length - index
-                                : countPerFrame;
-
-                var objects = _objectPool.GetObjects(count);
-
-                for (var i = 0; i < count; i++)
+        var blocks = new List<Block>();
+        for (var i = (int)transform.position.x; i < transform.position.x + _chunksMap.ChunkSizeX; i++)
+            for (var j = (int)transform.position.y; j < transform.position.y + _chunksMap.ChunkSizeY; j++)
+                for (var k = (int)transform.position.z; k < transform.position.z + _chunksMap.ChunkSizeZ; k++)
                 {
-                    var o = objects[i];
-                    var block = blocks[index + i];
-                    o.transform.parent = transform;
-                    o.transform.position = block.Position;
+                    var b = World.GetBlock(i, j, k);
+                    if (b == null) continue;
+                    blocks.Add(b);
                 }
 
-                yield return null;
-            }
 
-            Debug.Log(string.Format("Loading blocks {3}: {0}, {1}. {2} blocks", startDate2 - startDate, DateTime.Now - startDate2, blocks.Length, name));
-        }
+            if (blocks.Count > 0)
+            {
+                foreach (var block in blocks) SetBlock(block.Position, block);
+
+                Debug.Log(string.Format("{0} blocks", blocks.Count));
+
+                var startDate2 = DateTime.Now;
+
+                const int countPerFrame = 100;
+
+                for (var index = 0; index < blocks.Count; index += countPerFrame)
+                {
+                    var count = blocks.Count - index < countPerFrame
+                                    ? blocks.Count - index
+                                    : countPerFrame;
+
+                    var objects = _objectPool.GetObjects(count);
+
+                    for (var i = 0; i < count; i++)
+                    {
+                        var o = objects[i];
+                        var block = blocks[index + i];
+                        o.transform.parent = transform;
+                        o.transform.position = block.Position;
+                    }
+
+                    yield return null;
+                }
+
+                Debug.Log(string.Format("Loading blocks {3}: {0}, {1}. {2} blocks", startDate2 - startDate, DateTime.Now - startDate2, blocks.Count, name));
+            }
 
         _state = ChunkState.Finished;
 

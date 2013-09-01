@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour {
 
 	void Start ()
 	{
-	    _world = new World(10, 2, 10);
+	    //_world = new World(10, 2, 10);
 		_position = Player.position;
 	}
 	

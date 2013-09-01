@@ -15,11 +15,11 @@ public class ChunksMap : MonoBehaviour
     public int ChunkSizeY = 32;
     public int ChunkSizeZ = 32;
 
-    private IWorld _world;
+    private World _world;
 
     private void Start()
     {
-        _world = new World(ChunkSizeX, ChunkSizeY, ChunkSizeZ);
+        _world = new World(ChunkSizeX*CountX, ChunkSizeZ*CountZ, 10, 10, 10, 1);
 
         for (var i = 0; i < CountX; i++)
             for (var j = -2; j < CountY; j++)
@@ -59,6 +59,14 @@ public class ChunksMap : MonoBehaviour
         var cc = GetChunkControllerByBlock(pos);
         return cc.GetBlock(pos);
     }
+
+
+    public GameObject GetBlockObject(Vector3 pos)
+    {
+        var cc = GetChunkControllerByBlock(pos);
+        return cc.GetBlockObject(pos);
+    }
+
 
 
     public Block[] GetNearBlocks(Vector3 pos)
