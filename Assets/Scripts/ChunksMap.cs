@@ -105,13 +105,22 @@ public class ChunksMap : MonoBehaviour
         var cc = GetChunkControllerByBlock(pos);
         return cc.GetBlockObject(pos);
     }
-
-
+    
 
     public Block[] GetNearBlocks(Vector3 pos)
     {
         var cc = GetChunkControllerByBlock(pos);
         return cc.GetNearBlocks(pos);
+    }
+
+
+    /// <summary>
+    /// Если блок полностью окружён, то уничтожает его. Если не окружён, то создаёт.
+    /// </summary>
+    public void RefreshBlock(Vector3 pos)
+    {
+        var cc = GetChunkControllerByBlock(pos);
+        cc.RefreshBlock(pos);
     }
 
 

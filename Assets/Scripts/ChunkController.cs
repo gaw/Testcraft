@@ -76,26 +76,61 @@ public class ChunkController : MonoBehaviour
         var block = new Block(pos) {BlockType = blockType, Attributes = new List<string>(attributes)};
         SetBlock(pos, block);
 
-        var o = _objectPool.GetObjects(1)[0];
-        o.renderer.material.mainTexture = rs_mgr.GetTexture(blockType, attributes);
-        o.transform.parent = transform;
-        o.transform.position = pos;
-        o.AddComponent<BoxCollider>();
-        o.SetActive(true);
+        CreateBlockObject(block);
+
+        RefreshNearBlocks(pos);
     }
 
 
     public void RemoveBlock(Vector3 pos)
     {
-        int amountChild = transform.GetChildCount(); 
-        for (int i = 0; i < amountChild; i++)
-        {
-            var c = transform.GetChild(i);
-            if (c.position == pos)
-                Destroy(c.gameObject);  // todo ”брать в пул
+        SetBlock(pos, null);
+        RefreshNearBlocks(pos);
 
-            SetBlock(pos, null);
-        }       
+        var block = GetBlockObject(pos);
+        if (block == null) return;
+
+        Destroy(block.gameObject);  // todo ”брать в пул
+    }
+
+
+    public void RefreshBlock(Vector3 pos)
+    {
+        var block = GetBlock(pos);
+        if (block == null)
+            return;
+
+        var blockObject = GetBlockObject(pos);
+        var nearBlocks = GetNear8Blocks(pos);
+
+        if (blockObject == null && nearBlocks.Length < 6)
+        {
+            CreateBlockObject(block);
+            return;
+        }
+
+        if (blockObject != null && nearBlocks.Length == 6)
+        {
+            Destroy(blockObject);
+        }
+    }
+
+
+    public void RefreshNearBlocks(Vector3 pos)
+    {
+        foreach (var block in GetNear8Blocks(pos))
+            _chunksMap.RefreshBlock(block.Position);
+    }
+
+
+    private void CreateBlockObject(Block block)
+    {
+        var o = _objectPool.GetObjects(1)[0];
+        o.renderer.material.mainTexture = rs_mgr.GetTexture(block.BlockType, block.Attributes.ToArray());
+        o.transform.parent = transform;
+        o.transform.position = block.Position;
+        o.AddComponent<BoxCollider>();
+        o.SetActive(true);
     }
 
 
@@ -157,6 +192,22 @@ public class ChunkController : MonoBehaviour
 
         return blocks.ToArray();
     }
+
+
+    public Block[] GetNear8Blocks(Vector3 pos)
+    {
+        var blocks = new List<Block>();
+
+        blocks.Add(GetBlock(new Vector3(pos.x + 1, pos.y, pos.z)));
+        blocks.Add(GetBlock(new Vector3(pos.x - 1, pos.y, pos.z)));
+        blocks.Add(GetBlock(new Vector3(pos.x, pos.y + 1, pos.z)));
+        blocks.Add(GetBlock(new Vector3(pos.x, pos.y - 1, pos.z)));
+        blocks.Add(GetBlock(new Vector3(pos.x, pos.y, pos.z + 1)));
+        blocks.Add(GetBlock(new Vector3(pos.x, pos.y, pos.z - 1)));
+
+        return blocks.FindAll(a => a != null).ToArray();
+    }
+
     
 
     private float DistanceToPlayer(Vector3 position)
