@@ -8,6 +8,11 @@ public class PlayerInput : MonoBehaviour
     public Texture2D Crosshair;
     private BlockType _selectedBlockType;
 
+    public BlockType SelectedBlockType
+    {
+        get { return _selectedBlockType; }
+    }
+
     private void OnGUI()
     {
         if(Crosshair != null)
@@ -31,13 +36,15 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Alpha1))
+        #region Пользовательский ввод
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            _selectedBlockType = BlockType.Wood;
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha2))
         {
             _selectedBlockType = BlockType.Dirt;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            _selectedBlockType = BlockType.Stone;
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -45,8 +52,35 @@ public class PlayerInput : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            _selectedBlockType = BlockType.Wood;
+            _selectedBlockType = BlockType.Stone;
         }
+
+        if (Input.GetAxis("Mouse ScrollWheel") > 0) // колесико вверх
+        {
+            if (((int)_selectedBlockType) > 1)
+            {
+                _selectedBlockType = (BlockType)(((int) _selectedBlockType) - 1);
+            }
+            else
+            {
+                _selectedBlockType = (BlockType)4;
+            }
+
+        }
+        if (Input.GetAxis("Mouse ScrollWheel") < 0) // колесико вниз
+        {
+            if (((int)_selectedBlockType) < 4)
+            {
+                _selectedBlockType = (BlockType)(((int)_selectedBlockType) + 1);
+            }
+            else
+            {
+                _selectedBlockType = (BlockType)1;
+            }
+        }
+
+        #endregion
+        
     
 
         var ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));

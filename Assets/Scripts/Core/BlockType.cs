@@ -5,10 +5,10 @@ namespace TestCraft.Core
 {
     public enum BlockType
     {
-        Dirt,
-        Stone,
-        IronOre,
-        Wood
+        Dirt = 2,
+        Stone = 4,
+        IronOre = 3,
+        Wood = 1
     }
 
     public static class BlockExtensions
