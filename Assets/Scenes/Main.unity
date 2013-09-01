@@ -479,7 +479,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9ca74244c75a854ca8be526c32a7194, type: 3}
   m_Name: 
-  Prefab: {fileID: 0}
+  Prefab: {fileID: 100000, guid: 34106066561a4234d87d2d07bb962e98, type: 3}
   MinimalCount: 5000
 --- !u!1001 &1483616612
 Prefab:
