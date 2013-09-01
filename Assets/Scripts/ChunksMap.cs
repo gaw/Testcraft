@@ -65,6 +65,18 @@ public class ChunksMap : MonoBehaviour
             if (hiBlock != null)
             {
                 cc.AddBlock(pos, blockType);
+                var lowBlock = nbArray.FirstOrDefault(b => b.BlockType == BlockType.Dirt && b.Position == new Vector3(pos.x, pos.y - 1, pos.z));
+                if (lowBlock != null)
+                {
+                    lowBlock.Attributes.Remove(BlockAttributes.WithGrass);
+                    var bgo = cc.GetBlockObject(lowBlock.Position);
+                    if (bgo != null)
+                    {
+                        bgo.renderer.material.mainTexture = rs_mgr.GetTexture(BlockType.Dirt);
+                    }
+                }
+
+
             }
             else
             {
