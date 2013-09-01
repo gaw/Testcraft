@@ -13,19 +13,23 @@ public class ChunkController : MonoBehaviour
     
     private float distanceLoad = 50;
 
-    private Vector3 Center;
+    private Vector3 _center;
 
     private ChunkState _state = ChunkState.Empty;
 
-    private void Start()
+    private Block[,,] _blocks;
+
+
+    public void Start()
     {
         var chunksMapObject = GameObject.Find("ChunksMap");
         _objectPool = chunksMapObject.GetComponent<ObjectPool>();
 
         var chunksMap = gameObject.transform.parent.GetComponent<ChunksMap>();
-        Center = new Vector3(transform.position.x + chunksMap.ChunkSizeX / 2,
-                             transform.position.y + chunksMap.ChunkSizeY / 2,
-                             transform.position.z + chunksMap.ChunkSizeZ / 2);
+        _blocks = new Block[chunksMap.ChunkSizeX, chunksMap.ChunkSizeY, chunksMap.ChunkSizeZ];
+        _center = new Vector3((int)transform.position.x + chunksMap.ChunkSizeX / 2,
+                             (int)transform.position.y + chunksMap.ChunkSizeY / 2,
+                             (int)transform.position.z + chunksMap.ChunkSizeZ / 2);
 
         //var o = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         //o.transform.parent = transform;
@@ -34,7 +38,8 @@ public class ChunkController : MonoBehaviour
         //Debug.Log("Chunk Created");
     }
 
-    void Update () {
+
+    public void Update () {
         if (_state == ChunkState.Empty && DistanceToPlayer(transform.position) <= distanceLoad)
         {
             //Debug.Log("Chunk Loading");
@@ -43,12 +48,6 @@ public class ChunkController : MonoBehaviour
         }
         else if (_state == ChunkState.Finished && DistanceToPlayer(transform.position) > (distanceLoad))
         {
-            //if (MapPosition.y == 0)
-            //{
-            //    Debug.Log(string.Format("Disable: {0}, distance: {1}, position: {2}", name, DistanceToPlayer(transform.position), transform.position));
-                
-            //}
-
             DisableChunk();
         }
         else if (_state == ChunkState.Disabled && DistanceToPlayer(transform.position) <= (distanceLoad))
@@ -60,6 +59,9 @@ public class ChunkController : MonoBehaviour
 
     public void AddBlock(Vector3 pos, BlockType blockType)
     {
+        var block = new Block(pos) {BlockType = blockType};
+        SetBlock(pos, block);
+
         var o = _objectPool.GetObjects(1)[0];
         o.transform.parent = transform;
         o.transform.position = pos;
@@ -79,9 +81,28 @@ public class ChunkController : MonoBehaviour
     }
 
 
+    private void SetBlock(Vector3 pos, Block block)
+    {
+        try
+        {
+            _blocks[(int)pos.x - (int)transform.position.x, (int)pos.y - (int)transform.position.y, (int)pos.z - (int)transform.position.z] = block;
+        }
+        catch (Exception)
+        {
+            Debug.Log(pos.ToString() + "  " + transform.position.ToString());
+        }
+    }
+
+
+    public Block GetBlock(Vector3 pos)
+    {
+        return _blocks[(int)pos.x - (int)transform.position.x, (int)pos.y - (int)transform.position.y, (int)pos.z - (int)transform.position.z];
+    }
+
+
     private float DistanceToPlayer(Vector3 position)
     {
-        return Vector3.Distance(Player.transform.position, Center);
+        return Vector3.Distance(Player.transform.position, _center);
     }
 
     private IEnumerator LoadBlocks()
@@ -111,8 +132,11 @@ public class ChunkController : MonoBehaviour
                 for (var i = 0; i < count; i++)
                 {
                     var o = objects[i];
+                    var block = blocks[index + i];
                     o.transform.parent = transform;
-                    o.transform.position = blocks[index + i].Position;
+                    o.transform.position = block.Position;
+
+                    SetBlock(block.Position, block);
                 }
 
                 yield return null;

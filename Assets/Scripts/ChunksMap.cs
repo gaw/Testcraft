@@ -35,28 +35,42 @@ public class ChunksMap : MonoBehaviour
                     controller.Player = Player;
                     controller.World = _world;
                     controller.MapPosition = new Vector3(i, j, k);
-                    
                 }
     }
 
 
     public void AddBlock(Vector3 pos, BlockType blockType)
     {
-        var chunk = GetChunkByBlock(pos);
-        if (chunk == null) return;
-        
-        var cc = chunk.GetComponent<ChunkController>();
+        var cc = GetChunkControllerByBlock(pos);
         cc.AddBlock(pos, blockType);
     }
 
 
     public void RemoveBlock(Vector3 pos)
     {
-        var chunk = GetChunkByBlock(pos);
-        if (chunk == null) return;
-
-        var cc = chunk.GetComponent<ChunkController>();
+        var cc = GetChunkControllerByBlock(pos);
         cc.RemoveBlock(pos);
+    }
+
+
+    public Block GetBlock(Vector3 pos)
+    {
+        var cc = GetChunkControllerByBlock(pos);
+        return cc.GetBlock(pos);
+    }
+
+
+    public Block[] GetNearBlocks(Vector3 pos)
+    {
+        
+    }
+
+
+    private ChunkController GetChunkControllerByBlock(Vector3 pos)
+    {
+        var chunk = GetChunkByBlock(pos);
+        if (chunk == null) return null;
+        return chunk.GetComponent<ChunkController>();
     }
 
 
