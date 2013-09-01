@@ -11,11 +11,11 @@ public class ResourceManager : MonoBehaviour
 
     private readonly List<string> _textureFiles = new List<string>()
         {
-            "dirt_with_grass.jpg",
-            "dirt.jpg",
-            "stone.jpg",
-            "wood.jpg",
-            "iron_ore.jpg"
+            "dirt_with_grass",
+            "dirt",
+            "stone",
+            "wood",
+            "iron_ore"
         };
 
 
@@ -27,7 +27,7 @@ public class ResourceManager : MonoBehaviour
         Textures = new Dictionary<string, Texture2D>();
         foreach (var txt in _textureFiles)
         {
-            var texture = LoadTexture(string.Format("Assets/{0}/{1}", TextureFolder, txt));
+            var texture = LoadTexture(string.Format("{0}/{1}", TextureFolder, txt));
 
             if(texture != null)
                 Textures.Add(txt, texture);
@@ -37,7 +37,7 @@ public class ResourceManager : MonoBehaviour
 
     private Texture2D LoadTexture(string path)
     {
-        return Resources.LoadAssetAtPath(path, typeof (Texture2D)) as Texture2D;
+        return Resources.Load(path) as Texture2D;
     }
 
     public Texture2D GetTexture(BlockType type, params string[] attributes)
@@ -52,7 +52,7 @@ public class ResourceManager : MonoBehaviour
             }
             textSearch = textSearch + sb.ToString();
         }
-        textSearch = textSearch + ".JPG";
+        textSearch = textSearch;
         var tx = Textures.FirstOrDefault(x => x.Key.Replace("_", string.Empty).ToUpper() == textSearch.Replace("_", string.Empty));
         if (tx.Value != null)
             return tx.Value;

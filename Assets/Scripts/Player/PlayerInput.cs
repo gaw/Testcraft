@@ -32,11 +32,19 @@ public class PlayerInput : MonoBehaviour
         }
 
         _selectedBlockType = BlockType.Dirt;
+
+        Screen.showCursor = false;
+        Screen.lockCursor = true;
     }
 
     void Update()
     {
         #region Пользовательский ввод
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
