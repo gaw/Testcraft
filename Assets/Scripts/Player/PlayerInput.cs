@@ -101,7 +101,7 @@ public class PlayerInput : MonoBehaviour
                 gm_mgr.RemoveBlock(hit.collider.transform.position);
                 
             }
-            if (Input.GetMouseButtonDown(1) && hit.distance >= 1.5f)
+            if (Input.GetMouseButtonDown(1) && hit.distance >= 2f)
             {
                 gm_mgr.AddBlock(hit.transform.position + hit.normal, _selectedBlockType);
             }
